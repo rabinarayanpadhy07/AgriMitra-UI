@@ -1,0 +1,142 @@
+import React, { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { authService } from '../services/authService';
+import { RefreshCw } from 'lucide-react';
+import toast from 'react-hot-toast';
+
+export const VerifyOtp = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [countdown, setCountdown] = useState(60);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const identifier = location.state?.identifier || '';
+
+  useEffect(() => {
+    if (!identifier) {
+      toast.error('Please request an OTP first');
+      navigate('/forgot-password');
+      return;
+    }
+
+    const timer = countdown > 0 && setInterval(() => setCountdown(countdown - 1), 1000);
+    return () => clearInterval(timer);
+  }, [countdown, identifier, navigate]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: 'onTouched' });
+
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    try {
+      const res = await authService.verifyOtp(identifier, data.otp.trim());
+      toast.success(res.message || 'OTP verified successfully!');
+      navigate('/reset-password', {
+        state: { identifier, otp: data.otp.trim() },
+      });
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || 'Invalid or expired OTP. Please try again.';
+      toast.error(errorMsg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (countdown > 0) return;
+    setIsResending(true);
+    try {
+      const res = await authService.forgotPassword(identifier);
+      toast.success(res.message || 'New OTP sent!');
+      setCountdown(60);
+    } catch (err) {
+      toast.error('Failed to resend OTP. Please try again.');
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  return (
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50">
+      <div className="w-full max-w-md bg-white border border-slate-200/80 rounded-2xl shadow-xl shadow-slate-200/50 p-6 sm:p-8">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Enter OTP Code</h1>
+          <p className="text-sm text-slate-500 mt-1">
+            We sent a 6-digit verification code to <span className="text-slate-900 font-semibold">{identifier}</span>
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5 text-center">
+              6-Digit One-Time Password <span className="text-rose-500">*</span>
+            </label>
+            <input
+              type="text"
+              maxLength={6}
+              placeholder="123456"
+              className={`w-full text-center tracking-[0.75em] text-2xl font-mono py-3 bg-slate-50 border rounded-xl text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 transition ${
+                errors.otp
+                  ? 'border-rose-500 focus:ring-rose-500/20'
+                  : 'border-slate-300 focus:border-indigo-600 focus:ring-indigo-500/20'
+              }`}
+              {...register('otp', {
+                required: 'Please enter the 6-digit OTP',
+                pattern: {
+                  value: /^[0-9]{6}$/,
+                  message: 'OTP must be exactly 6 numeric digits',
+                },
+              })}
+            />
+            {errors.otp && (
+              <p className="text-xs text-rose-500 mt-1.5 text-center">{errors.otp.message}</p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold shadow-md shadow-indigo-600/20 transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+          >
+            {isSubmitting ? (
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <span>Verify OTP</span>
+            )}
+          </button>
+        </form>
+
+        {/* Resend section */}
+        <div className="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+          <Link
+            to="/forgot-password"
+            className="inline-flex items-center gap-1 hover:text-slate-900 transition cursor-pointer font-medium"
+          >
+            <span>&larr; Change Identifier</span>
+          </Link>
+
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={countdown > 0 || isResending}
+            className={`inline-flex items-center gap-1 font-semibold transition ${
+              countdown > 0 || isResending
+                ? 'text-slate-400 cursor-not-allowed'
+                : 'text-indigo-600 hover:text-indigo-700 cursor-pointer'
+            }`}
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isResending ? 'animate-spin' : ''}`} />
+            <span>{countdown > 0 ? `Resend in ${countdown}s` : 'Resend OTP'}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
