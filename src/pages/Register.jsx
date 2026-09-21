@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { PasswordStrengthMeter } from '../components/PasswordStrengthMeter';
 import { Eye, EyeOff } from 'lucide-react';
+import agriMitraLogo from '../assets/AgriMitra.png';
 import toast from 'react-hot-toast';
 
 export const Register = () => {
@@ -44,12 +45,20 @@ export const Register = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50">
-      <div className="w-full max-w-lg bg-white border border-slate-200/80 rounded-2xl shadow-xl shadow-slate-200/50 p-6 sm:p-8">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gradient-to-b from-emerald-50/40 to-slate-50">
+      <div className="w-full max-w-lg bg-white border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-900/5 p-6 sm:p-8">
         {/* Header */}
         <div className="text-center mb-6">
+          <img
+            src={agriMitraLogo}
+            alt="AgriMitra"
+            className="h-16 w-auto mx-auto mb-2 drop-shadow-sm object-contain"
+          />
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Create an Account</h1>
-          <p className="text-sm text-slate-500 mt-1">Join ShopEasy today for secure shopping</p>
+          <p className="text-sm text-slate-600 mt-1">Join <span className="font-semibold text-emerald-800">AgriMitra</span> today for secure agricultural access</p>
+          <p className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider mt-1.5">
+            Sowing Prosperity • Growing Trust
+          </p>
         </div>
 
         {/* Form */}
@@ -65,7 +74,7 @@ export const Register = () => {
               className={`w-full px-4 py-2.5 bg-white border rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition ${
                 errors.fullName
                   ? 'border-rose-500 focus:ring-rose-500/20'
-                  : 'border-slate-300 focus:border-indigo-600 focus:ring-indigo-500/20'
+                  : 'border-slate-300 focus:border-emerald-600 focus:ring-emerald-500/20'
               }`}
               {...register('fullName', {
                 required: 'Full name is required',
@@ -89,7 +98,7 @@ export const Register = () => {
               className={`w-full px-4 py-2.5 bg-white border rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition ${
                 errors.email
                   ? 'border-rose-500 focus:ring-rose-500/20'
-                  : 'border-slate-300 focus:border-indigo-600 focus:ring-indigo-500/20'
+                  : 'border-slate-300 focus:border-emerald-600 focus:ring-emerald-500/20'
               }`}
               {...register('email', {
                 required: 'Email address is required',
@@ -116,7 +125,7 @@ export const Register = () => {
               className={`w-full px-4 py-2.5 bg-white border rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition ${
                 errors.mobileNumber
                   ? 'border-rose-500 focus:ring-rose-500/20'
-                  : 'border-slate-300 focus:border-indigo-600 focus:ring-indigo-500/20'
+                  : 'border-slate-300 focus:border-emerald-600 focus:ring-emerald-500/20'
               }`}
               {...register('mobileNumber', {
                 required: 'Mobile number is required',
@@ -143,7 +152,7 @@ export const Register = () => {
                 className={`w-full px-4 pr-11 py-2.5 bg-white border rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition ${
                   errors.password
                     ? 'border-rose-500 focus:ring-rose-500/20'
-                    : 'border-slate-300 focus:border-indigo-600 focus:ring-indigo-500/20'
+                    : 'border-slate-300 focus:border-emerald-600 focus:ring-emerald-500/20'
                 }`}
                 {...register('password', {
                   required: 'Password is required',
@@ -185,7 +194,7 @@ export const Register = () => {
                 className={`w-full px-4 pr-11 py-2.5 bg-white border rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 transition ${
                   errors.confirmPassword
                     ? 'border-rose-500 focus:ring-rose-500/20'
-                    : 'border-slate-300 focus:border-indigo-600 focus:ring-indigo-500/20'
+                    : 'border-slate-300 focus:border-emerald-600 focus:ring-emerald-500/20'
                 }`}
                 {...register('confirmPassword', {
                   required: 'Please confirm your password',
@@ -209,7 +218,7 @@ export const Register = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-2 py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold shadow-md shadow-indigo-600/20 transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full mt-2 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-semibold shadow-md shadow-emerald-700/20 transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isSubmitting ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -222,7 +231,7 @@ export const Register = () => {
         {/* Footer */}
         <div className="mt-6 text-center text-xs text-slate-500">
           Already have an account?{' '}
-          <Link to="/login" className="text-indigo-600 hover:text-indigo-700 font-semibold underline underline-offset-4 cursor-pointer">
+          <Link to="/login" className="text-emerald-700 hover:text-emerald-800 font-semibold underline underline-offset-4 cursor-pointer">
             Log in here
           </Link>
         </div>

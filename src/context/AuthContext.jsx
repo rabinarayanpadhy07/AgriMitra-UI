@@ -4,22 +4,24 @@ import { authService } from '../services/authService';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(() => localStorage.getItem('shopeasy_token'));
+  const [token, setToken] = useState(() => 
+    localStorage.getItem('agrimitra_token') || localStorage.getItem('shopeasy_token')
+  );
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('shopeasy_user');
+    const savedUser = localStorage.getItem('agrimitra_user') || localStorage.getItem('shopeasy_user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const verifyStoredSession = async () => {
-      const storedToken = localStorage.getItem('shopeasy_token');
+      const storedToken = localStorage.getItem('agrimitra_token') || localStorage.getItem('shopeasy_token');
       if (storedToken) {
         try {
           const profileRes = await authService.getProfile();
           if (profileRes.success && profileRes.data) {
             setUser(profileRes.data);
-            localStorage.setItem('shopeasy_user', JSON.stringify(profileRes.data));
+            localStorage.setItem('agrimitra_user', JSON.stringify(profileRes.data));
           }
         } catch (err) {
           console.warn('Session verification failed, clearing auth state');
@@ -41,8 +43,11 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (authToken, authUser) => {
-    localStorage.setItem('shopeasy_token', authToken);
-    localStorage.setItem('shopeasy_user', JSON.stringify(authUser));
+    localStorage.setItem('agrimitra_token', authToken);
+    localStorage.setItem('agrimitra_user', JSON.stringify(authUser));
+    // Clean up old keys if present
+    localStorage.removeItem('shopeasy_token');
+    localStorage.removeItem('shopeasy_user');
     setToken(authToken);
     setUser(authUser);
   };
@@ -53,6 +58,8 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       // ignore
     } finally {
+      localStorage.removeItem('agrimitra_token');
+      localStorage.removeItem('agrimitra_user');
       localStorage.removeItem('shopeasy_token');
       localStorage.removeItem('shopeasy_user');
       setToken(null);
@@ -65,7 +72,7 @@ export const AuthProvider = ({ children }) => {
       const res = await authService.getProfile();
       if (res.success && res.data) {
         setUser(res.data);
-        localStorage.setItem('shopeasy_user', JSON.stringify(res.data));
+        localStorage.setItem('agrimitra_user', JSON.stringify(res.data));
       }
     } catch (err) {
       console.error('Failed to refresh profile:', err);

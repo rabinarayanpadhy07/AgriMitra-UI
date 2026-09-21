@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { RefreshCw } from 'lucide-react';
+import agriMitraLogo from '../assets/AgriMitra.png';
 import toast from 'react-hot-toast';
 
 export const VerifyOtp = () => {
@@ -62,13 +63,21 @@ export const VerifyOtp = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50">
-      <div className="w-full max-w-md bg-white border border-slate-200/80 rounded-2xl shadow-xl shadow-slate-200/50 p-6 sm:p-8">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gradient-to-b from-emerald-50/40 to-slate-50">
+      <div className="w-full max-w-md bg-white border border-emerald-100 rounded-2xl shadow-xl shadow-emerald-900/5 p-6 sm:p-8">
         {/* Header */}
         <div className="text-center mb-6">
+          <img
+            src={agriMitraLogo}
+            alt="AgriMitra"
+            className="h-16 w-auto mx-auto mb-2 drop-shadow-sm object-contain"
+          />
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Enter OTP Code</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            We sent a 6-digit verification code to <span className="text-slate-900 font-semibold">{identifier}</span>
+          <p className="text-sm text-slate-600 mt-1">
+            We sent a 6-digit verification code to <span className="text-emerald-900 font-semibold">{identifier}</span>
+          </p>
+          <p className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider mt-1.5">
+            Sowing Prosperity • Growing Trust
           </p>
         </div>
 
@@ -82,10 +91,10 @@ export const VerifyOtp = () => {
               type="text"
               maxLength={6}
               placeholder="123456"
-              className={`w-full text-center tracking-[0.75em] text-2xl font-mono py-3 bg-slate-50 border rounded-xl text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 transition ${
+              className={`w-full text-center tracking-[0.75em] text-2xl font-mono py-3 bg-emerald-50/30 border rounded-xl text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 transition ${
                 errors.otp
                   ? 'border-rose-500 focus:ring-rose-500/20'
-                  : 'border-slate-300 focus:border-indigo-600 focus:ring-indigo-500/20'
+                  : 'border-slate-300 focus:border-emerald-600 focus:ring-emerald-500/20'
               }`}
               {...register('otp', {
                 required: 'Please enter the 6-digit OTP',
@@ -103,7 +112,7 @@ export const VerifyOtp = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold shadow-md shadow-indigo-600/20 transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-semibold shadow-md shadow-emerald-700/20 transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
           >
             {isSubmitting ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -117,7 +126,7 @@ export const VerifyOtp = () => {
         <div className="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
           <Link
             to="/forgot-password"
-            className="inline-flex items-center gap-1 hover:text-slate-900 transition cursor-pointer font-medium"
+            className="inline-flex items-center gap-1 hover:text-emerald-800 transition cursor-pointer font-medium"
           >
             <span>&larr; Change Identifier</span>
           </Link>
@@ -129,7 +138,7 @@ export const VerifyOtp = () => {
             className={`inline-flex items-center gap-1 font-semibold transition ${
               countdown > 0 || isResending
                 ? 'text-slate-400 cursor-not-allowed'
-                : 'text-indigo-600 hover:text-indigo-700 cursor-pointer'
+                : 'text-emerald-700 hover:text-emerald-800 cursor-pointer'
             }`}
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isResending ? 'animate-spin' : ''}`} />

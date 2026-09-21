@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,7 +10,7 @@ const api = axios.create({
 // Request interceptor: Attach JWT Bearer token if present
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('shopeasy_token');
+    const token = localStorage.getItem('agrimitra_token') || localStorage.getItem('shopeasy_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -25,7 +25,9 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       // Clear storage only if user was supposedly logged in
-      if (localStorage.getItem('shopeasy_token')) {
+      if (localStorage.getItem('agrimitra_token') || localStorage.getItem('shopeasy_token')) {
+        localStorage.removeItem('agrimitra_token');
+        localStorage.removeItem('agrimitra_user');
         localStorage.removeItem('shopeasy_token');
         localStorage.removeItem('shopeasy_user');
         window.dispatchEvent(new Event('auth:unauthorized'));

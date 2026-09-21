@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ShoppingBag, LogOut, Key, User, ShieldCheck } from 'lucide-react';
+import { LogOut, Key, User, ShieldCheck } from 'lucide-react';
+import agriMitraLogo from '../assets/AgriMitra.png';
 import toast from 'react-hot-toast';
 
 export const Navbar = () => {
@@ -15,30 +16,37 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50 shadow-xs">
+    <header className="bg-white/95 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-50 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
-        <Link to="/" className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-slate-900 group cursor-pointer">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-transform">
-            <ShoppingBag className="w-5 h-5 text-white" />
+        <Link to="/" className="flex items-center gap-2.5 group cursor-pointer">
+          <img
+            src={agriMitraLogo}
+            alt="AgriMitra Logo"
+            className="h-10 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-xs"
+          />
+          <div className="flex flex-col">
+            <span className="font-extrabold text-lg sm:text-xl tracking-tight text-emerald-950 leading-none">
+              Agri<span className="text-emerald-600">Mitra</span>
+            </span>
+            <span className="text-[10px] text-emerald-700/80 font-medium tracking-wider uppercase hidden sm:block">
+              Sowing Prosperity
+            </span>
           </div>
-          <span>
-            Shop<span className="text-indigo-600">Easy</span>
-          </span>
         </Link>
 
         {/* Navigation / Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
           {isAuthenticated ? (
             <>
-              <div className="hidden md:flex items-center gap-2 text-xs text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+              <div className="hidden md:flex items-center gap-2 text-xs text-emerald-900 bg-emerald-50/80 px-3 py-1.5 rounded-lg border border-emerald-200">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Logged in as <strong className="text-slate-900">{user?.fullName || user?.email}</strong></span>
+                <span>Logged in as <strong className="text-emerald-950">{user?.fullName || user?.email}</strong></span>
               </div>
 
               <Link
                 to="/dashboard"
-                className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-700 hover:text-indigo-600 px-3 py-2 rounded-lg hover:bg-slate-100 transition cursor-pointer"
+                className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-700 hover:text-emerald-600 px-3 py-2 rounded-lg hover:bg-emerald-50 transition cursor-pointer"
               >
                 <User className="w-4 h-4" />
                 <span>Dashboard</span>
@@ -46,7 +54,7 @@ export const Navbar = () => {
 
               <Link
                 to="/change-password"
-                className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-700 hover:text-indigo-600 px-3 py-2 rounded-lg hover:bg-slate-100 transition cursor-pointer"
+                className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-700 hover:text-emerald-600 px-3 py-2 rounded-lg hover:bg-emerald-50 transition cursor-pointer"
               >
                 <Key className="w-4 h-4" />
                 <span>Change Password</span>
@@ -64,13 +72,13 @@ export const Navbar = () => {
             <div className="flex items-center gap-2">
               <Link
                 to="/login"
-                className="text-xs sm:text-sm font-medium text-slate-700 hover:text-slate-900 px-3.5 py-2 rounded-lg hover:bg-slate-100 transition cursor-pointer"
+                className="text-xs sm:text-sm font-medium text-slate-700 hover:text-emerald-700 px-3.5 py-2 rounded-lg hover:bg-emerald-50 transition cursor-pointer"
               >
                 Log In
               </Link>
               <Link
                 to="/register"
-                className="text-xs sm:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-lg shadow-sm shadow-indigo-600/20 transition cursor-pointer"
+                className="text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 px-4 py-2 rounded-lg shadow-sm shadow-emerald-600/25 transition cursor-pointer"
               >
                 Create Account
               </Link>
