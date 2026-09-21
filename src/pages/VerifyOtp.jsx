@@ -14,6 +14,7 @@ export const VerifyOtp = () => {
   const location = useLocation();
 
   const identifier = location.state?.identifier || '';
+  const [fallbackOtp, setFallbackOtp] = useState(location.state?.fallbackOtp || '');
 
   useEffect(() => {
     if (!identifier) {
@@ -29,8 +30,15 @@ export const VerifyOtp = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({ mode: 'onTouched' });
+
+  useEffect(() => {
+    if (fallbackOtp) {
+      setValue('otp', fallbackOtp);
+    }
+  }, [fallbackOtp, setValue]);
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -53,7 +61,13 @@ export const VerifyOtp = () => {
     setIsResending(true);
     try {
       const res = await authService.forgotPassword(identifier);
-      toast.success(res.message || 'New OTP sent!');
+      if (res.data?.otp) {
+        setFallbackOtp(res.data.otp);
+        setValue('otp', res.data.otp);
+        toast.success(`New OTP code: ${res.data.otp}`, { duration: 6000 });
+      } else {
+        toast.success(res.message || 'New OTP sent!');
+      }
       setCountdown(60);
     } catch (err) {
       toast.error('Failed to resend OTP. Please try again.');
@@ -80,6 +94,26 @@ export const VerifyOtp = () => {
             Sowing Prosperity • Growing Trust
           </p>
         </div>
+
+        {/* Fallback OTP Banner (if SMTP is not configured) */}
+        {fallbackOtp && (
+          <div className="mb-5 p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex items-center justify-between">
+            <div>
+              <span className="font-semibold text-emerald-800">Verification OTP:</span>{' '}
+              <code className="font-mono bg-white px-2 py-0.5 rounded border border-emerald-300 font-bold text-sm text-emerald-900">
+                {fallbackOtp}
+              </code>
+              <p className="text-[10px] text-emerald-700 mt-0.5">Auto-filled (SMTP not active on server)</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setValue('otp', fallbackOtp)}
+              className="text-[11px] font-semibold text-emerald-800 hover:text-emerald-950 bg-emerald-200/60 px-2.5 py-1 rounded-lg cursor-pointer transition"
+            >
+              Fill Code
+            </button>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

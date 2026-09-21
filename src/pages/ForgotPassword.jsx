@@ -19,8 +19,18 @@ export const ForgotPassword = () => {
     setIsSubmitting(true);
     try {
       const res = await authService.forgotPassword(data.identifier.trim());
-      toast.success(res.message || 'OTP has been generated and dispatched!');
-      navigate('/verify-otp', { state: { identifier: data.identifier.trim() } });
+      const fallbackOtp = res.data?.otp;
+      if (fallbackOtp) {
+        toast.success(`OTP code: ${fallbackOtp}`, { duration: 6000 });
+      } else {
+        toast.success(res.message || 'OTP has been generated and dispatched!');
+      }
+      navigate('/verify-otp', {
+        state: {
+          identifier: data.identifier.trim(),
+          fallbackOtp,
+        },
+      });
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Failed to generate OTP. Please try again.';
       toast.error(errorMsg);
