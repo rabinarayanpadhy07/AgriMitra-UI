@@ -19,20 +19,12 @@ export const Navbar = () => {
     <header className="bg-white/95 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-50 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
-        <Link to="/" className="flex items-center gap-2.5 group cursor-pointer">
+        <Link to="/" className="flex items-center group cursor-pointer">
           <img
             src={agriMitraLogo}
             alt="AgriMitra Logo"
-            className="h-10 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-xs"
+            className="h-11 sm:h-12 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-xs"
           />
-          <div className="flex flex-col">
-            <span className="font-extrabold text-lg sm:text-xl tracking-tight text-emerald-950 leading-none">
-              Agri<span className="text-emerald-600">Mitra</span>
-            </span>
-            <span className="text-[10px] text-emerald-700/80 font-medium tracking-wider uppercase hidden sm:block">
-              Sowing Prosperity
-            </span>
-          </div>
         </Link>
 
         {/* Navigation / Actions */}
