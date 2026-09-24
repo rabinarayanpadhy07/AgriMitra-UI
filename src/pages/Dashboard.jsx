@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   User,
@@ -9,6 +10,9 @@ import {
   Sprout,
   ShieldCheck,
   Leaf,
+  ShoppingBag,
+  PackageCheck,
+  MapPin,
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -121,6 +125,74 @@ export const Dashboard = () => {
           <span className="font-mono text-xs text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 font-bold">
             AGRIMITRA_#{user?.id}
           </span>
+        </div>
+      </div>
+
+      {/* Admin shortcut */}
+      {user?.role === 'ADMIN' && (
+        <div className="bg-violet-50 border border-violet-200 rounded-2xl p-6 flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center border border-violet-200">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-sm font-bold text-slate-900">You have admin access</h2>
+              <p className="text-xs text-slate-600">Manage users, sellers, and the platform.</p>
+            </div>
+          </div>
+          <Link
+            to="/admin/dashboard"
+            className="text-xs font-semibold text-white bg-violet-600 hover:bg-violet-500 px-4 py-2 rounded-lg shadow-sm transition cursor-pointer"
+          >
+            Go to Admin Panel
+          </Link>
+        </div>
+      )}
+
+      {/* Quick Account Navigation */}
+      <div className="space-y-3">
+        <h3 className="text-xs uppercase text-slate-500 font-bold tracking-wider px-1">
+          Quick Actions
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Link
+            to="/"
+            className="bg-white border border-slate-200 hover:border-emerald-500 rounded-2xl p-5 shadow-xs hover:shadow-md transition group flex flex-col justify-between cursor-pointer"
+          >
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+              <ShoppingBag className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition">Marketplace</h3>
+              <p className="text-xs text-slate-500 mt-1">Browse seeds, fertilizers & tools</p>
+            </div>
+          </Link>
+
+          <Link
+            to="/orders"
+            className="bg-white border border-slate-200 hover:border-emerald-500 rounded-2xl p-5 shadow-xs hover:shadow-md transition group flex flex-col justify-between cursor-pointer"
+          >
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+              <PackageCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition">My Orders</h3>
+              <p className="text-xs text-slate-500 mt-1">Track orders and delivery status</p>
+            </div>
+          </Link>
+
+          <Link
+            to="/addresses"
+            className="bg-white border border-slate-200 hover:border-emerald-500 rounded-2xl p-5 shadow-xs hover:shadow-md transition group flex flex-col justify-between cursor-pointer"
+          >
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+              <MapPin className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition">Addresses</h3>
+              <p className="text-xs text-slate-500 mt-1">Manage farm & delivery locations</p>
+            </div>
+          </Link>
         </div>
       </div>
     </div>

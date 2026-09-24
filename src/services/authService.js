@@ -57,4 +57,10 @@ export const authService = {
     const response = await api.get('/api/user/sessions');
     return response.data;
   },
+
+  // Request seller access (creates a PENDING seller application for admin review)
+  applyForSellerStatus: async () => {
+    const response = await api.post('/api/user/seller-application');
+    return response.data;
+  },
 };
