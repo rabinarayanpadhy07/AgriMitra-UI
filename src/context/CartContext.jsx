@@ -48,8 +48,13 @@ export const CartProvider = ({ children }) => {
       return false;
     }
     try {
-      await shopService.addToCart(productId, quantity);
-      await refreshCart();
+      const res = await shopService.addToCart(productId, quantity);
+      if (res?.data) {
+        setCart(res.data);
+        setCartCount(calculateCount(res.data));
+      } else {
+        await refreshCart();
+      }
       if (showToast) {
         toast.success('Added to cart!');
       }

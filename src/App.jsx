@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
@@ -14,20 +14,23 @@ import { VerifyOtp } from './pages/VerifyOtp';
 import { ResetPassword } from './pages/ResetPassword';
 import { Dashboard } from './pages/Dashboard';
 import { ChangePassword } from './pages/ChangePassword';
-import { AdminDashboard } from './pages/admin/AdminDashboard';
-import { AdminUsers } from './pages/admin/AdminUsers';
-import { AdminSellers } from './pages/admin/AdminSellers';
-import { AdminProducts } from './pages/admin/AdminProducts';
-import { AdminCategories } from './pages/admin/AdminCategories';
-import { AdminInventory } from './pages/admin/AdminInventory';
-import { AdminOrders } from './pages/admin/AdminOrders';
-import { AdminPayments } from './pages/admin/AdminPayments';
-import { AdminReviews } from './pages/admin/AdminReviews';
-import { AdminCoupons } from './pages/admin/AdminCoupons';
-import { AdminReturns } from './pages/admin/AdminReturns';
-import { AdminBanners } from './pages/admin/AdminBanners';
-import { AdminCrops } from './pages/admin/AdminCrops';
-import { AdminNotifications } from './pages/admin/AdminNotifications';
+
+// Lazy-loaded Admin pages (reduces main marketplace bundle significantly)
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
+const AdminUsers = lazy(() => import('./pages/admin/AdminUsers').then((m) => ({ default: m.AdminUsers })));
+const AdminSellers = lazy(() => import('./pages/admin/AdminSellers').then((m) => ({ default: m.AdminSellers })));
+const AdminProducts = lazy(() => import('./pages/admin/AdminProducts').then((m) => ({ default: m.AdminProducts })));
+const AdminCategories = lazy(() => import('./pages/admin/AdminCategories').then((m) => ({ default: m.AdminCategories })));
+const AdminInventory = lazy(() => import('./pages/admin/AdminInventory').then((m) => ({ default: m.AdminInventory })));
+const AdminOrders = lazy(() => import('./pages/admin/AdminOrders').then((m) => ({ default: m.AdminOrders })));
+const AdminPayments = lazy(() => import('./pages/admin/AdminPayments').then((m) => ({ default: m.AdminPayments })));
+const AdminReviews = lazy(() => import('./pages/admin/AdminReviews').then((m) => ({ default: m.AdminReviews })));
+const AdminCoupons = lazy(() => import('./pages/admin/AdminCoupons').then((m) => ({ default: m.AdminCoupons })));
+const AdminReturns = lazy(() => import('./pages/admin/AdminReturns').then((m) => ({ default: m.AdminReturns })));
+const AdminBanners = lazy(() => import('./pages/admin/AdminBanners').then((m) => ({ default: m.AdminBanners })));
+const AdminCrops = lazy(() => import('./pages/admin/AdminCrops').then((m) => ({ default: m.AdminCrops })));
+const AdminNotifications = lazy(() => import('./pages/admin/AdminNotifications').then((m) => ({ default: m.AdminNotifications })));
+
 import { Shop } from './pages/Shop';
 import { ProductDetail } from './pages/ProductDetail';
 import { Cart } from './pages/Cart';
@@ -45,6 +48,7 @@ function App() {
           <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-emerald-600 selection:text-white">
           <Navbar />
           <main className="flex-1">
+            <Suspense fallback={<div className="flex items-center justify-center min-h-[50vh] text-slate-400 text-sm">Loading...</div>}>
             <Routes>
               {/* Public Routes */}
               <Route path="/register" element={<Register />} />
@@ -128,6 +132,7 @@ function App() {
               {/* Wildcard redirect to Home */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+            </Suspense>
           </main>
           <Footer />
           <Toaster

@@ -38,7 +38,7 @@ export const Checkout = () => {
 
   const handleRazorpayPayment = async (placedOrder) => {
     try {
-      toast.loading('Initializing Razorpay gateway...', { id: 'rzp-init' });
+      toast.loading('Initializing official Razorpay gateway...', { id: 'rzp-init' });
       const rzpOrderRes = await shopService.createRazorpayOrder(placedOrder.id);
       const rzpData = rzpOrderRes.data;
       toast.dismiss('rzp-init');
@@ -46,57 +46,48 @@ export const Checkout = () => {
       setCurrentPlacedOrder(placedOrder);
       setActiveRzpOrder(rzpData);
 
-      const isOfficialOrder = rzpData.razorpayOrderId && !rzpData.razorpayOrderId.startsWith('order_test_');
-
-      if (isOfficialOrder) {
-        const scriptLoaded = await loadRazorpay();
-        if (scriptLoaded && window.Razorpay) {
-          const options = {
-            key: rzpData.keyId,
-            amount: rzpData.amountInPaise,
-            currency: rzpData.currency || 'INR',
-            name: rzpData.companyName || 'AgriMitra',
-            description: `Order #${placedOrder.id} Payment`,
-            image: agriMitraLogo,
-            order_id: rzpData.razorpayOrderId,
-            handler: async function (response) {
-              await handlePaymentSuccess({
-                ...response,
-                orderId: placedOrder.id,
-              });
-            },
-            prefill: {
-              name: rzpData.customerName || '',
-              email: rzpData.customerEmail || '',
-              contact: rzpData.customerPhone || '',
-            },
-            theme: {
-              color: '#059669',
-            },
-            modal: {
-              ondismiss: function () {
-                setRazorpayModalOpen(true);
-              },
-            },
-          };
-
-          try {
-            const rzp = new window.Razorpay(options);
-            rzp.on('payment.failed', function (resp) {
-              toast.error(resp.error?.description || 'Payment failed on Razorpay');
-              setRazorpayModalOpen(true);
-            });
-            rzp.open();
-          } catch {
-            setRazorpayModalOpen(true);
-          }
-        } else {
-          setRazorpayModalOpen(true);
-        }
-      } else {
-        // Test sandbox order: Open AgriMitra Razorpay Test Modal directly so user enters details without CDN failures
+      const scriptLoaded = await loadRazorpay();
+      if (!scriptLoaded || !window.Razorpay) {
+        toast.error('Unable to load Razorpay checkout script. Please check your internet connection.');
         setRazorpayModalOpen(true);
+        return;
       }
+
+      const options = {
+        key: rzpData.keyId,
+        amount: rzpData.amountInPaise,
+        currency: rzpData.currency || 'INR',
+        name: rzpData.companyName || 'AgriMitra',
+        description: `Order #${placedOrder.id} Payment`,
+        image: agriMitraLogo,
+        order_id: rzpData.razorpayOrderId,
+        handler: async function (response) {
+          await handlePaymentSuccess({
+            ...response,
+            orderId: placedOrder.id,
+          });
+        },
+        prefill: {
+          name: rzpData.customerName || '',
+          email: rzpData.customerEmail || '',
+          contact: rzpData.customerPhone || '',
+        },
+        theme: {
+          color: '#059669',
+        },
+        modal: {
+          ondismiss: function () {
+            toast('Payment cancelled or closed. You can retry from My Orders.', { icon: 'ℹ️' });
+            navigate(`/orders/${placedOrder.id}`);
+          },
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (resp) {
+        toast.error(resp.error?.description || 'Payment failed on Razorpay');
+      });
+      rzp.open();
     } catch (err) {
       toast.dismiss('rzp-init');
       clearCartState();
@@ -107,7 +98,7 @@ export const Checkout = () => {
 
   const handlePaymentSuccess = async (response) => {
     const targetOrderId = response?.orderId || currentPlacedOrder?.id || activeRzpOrder?.orderId;
-    const targetRzpOrderId = response?.razorpay_order_id || activeRzpOrder?.razorpayOrderId || ('order_test_' + targetOrderId);
+    const targetRzpOrderId = response?.razorpay_order_id || activeRzpOrder?.razorpayOrderId;
     try {
       toast.loading('Verifying Razorpay payment...', { id: 'rzp-verify' });
       await shopService.verifyRazorpayPayment({
